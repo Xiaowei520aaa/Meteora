@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -94,7 +95,7 @@ public class GamePanel extends JPanel {
 			return;
 		}
 		
-		Font font = new Font("Helvetica", Font.BOLD, 20);
+		Font font = new Font(App.messages.getString("font"), Font.BOLD, 20);
 		g.setColor(Color.GRAY);
 		g.setFont(font);
 		g.drawString(App.messages.getString("score") + " " + GameVariables.SCORE, Constants.GAME_WIDTH - 150, 50);
@@ -107,7 +108,7 @@ public class GamePanel extends JPanel {
 		background.update(g);
 		
 		// GAME OVER !!!
-		Font font = new Font("Helvetica", Font.BOLD, 50);
+		Font font = new Font(App.messages.getString("font"), Font.BOLD, 50);
 		FontMetrics fontMetrics = getFontMetrics(font);
 		
 		// draw game over
@@ -122,6 +123,29 @@ public class GamePanel extends JPanel {
 		g.drawString(App.messages.getString("score") + " " + GameVariables.SCORE, Constants.GAME_WIDTH/2 
 				- fontMetrics.stringWidth("Score: " + GameVariables.SCORE)/2
 				, Constants.GAME_HEIGHT-300);
+
+		// // quit the game
+		// g.setColor(Color.GREEN);
+		// g.setFont(font);
+		// // 计算按钮的位置   
+		// int buttonWidth = Constants.CLOSE_GAME_BUTTON.getPreferredSize().width;  
+		// int buttonHeight = Constants.CLOSE_GAME_BUTTON.getPreferredSize().height;  
+		// int buttonX = (Constants.GAME_WIDTH - buttonWidth) / 2;  
+		// int buttonY = (Constants.GAME_HEIGHT - buttonHeight) / 2;  
+		// Constants.CLOSE_GAME_BUTTON.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);  
+		// add(Constants.CLOSE_GAME_BUTTON);
+		// // Create the "Game Over" button  
+    	// Constants.CLOSE_GAME_BUTTON.addActionListener(e -> {  
+		// int choice = JOptionPane.showConfirmDialog(this, "What would you like to do?", "Game Over", JOptionPane.YES_NO_OPTION);  
+		// if (choice == JOptionPane.YES_OPTION) {  
+		// 	// Restart the game  
+		// 	remove(Constants.CLOSE_GAME_BUTTON);
+		// 	restartGame();  
+		// } else {  
+		// 	// Close the game  
+		// 	System.exit(0);  
+		// }  
+		// });  
 	}
 
 	private void handleMeteors(Graphics g) {
@@ -149,7 +173,7 @@ public class GamePanel extends JPanel {
 		// repaint the canvas
 		repaint();
 	}
-
+	
 	private void update() {
 		
 		if(spaceShip.isDead()) {
@@ -244,4 +268,13 @@ public class GamePanel extends JPanel {
 	public void keyReleased(KeyEvent e) {
 		spaceShip.keyReleased(e);
 	}
+
+	// public void restartGame() {  
+    //     initalizeVariables(); // Reset the game variables  
+    //     GameVariables.IN_GAME = true; // Set the game state to in-game  
+    //     if (!timer.isRunning()) {  
+    //         timer.start(); // Start the game loop if it's not running  
+    //     }  
+    //     repaint(); // Repaint the canvas to display the reset game state  
+    // }
 }

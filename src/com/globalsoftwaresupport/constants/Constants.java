@@ -1,7 +1,10 @@
 package com.globalsoftwaresupport.constants;
 
-public class Constants {
+import com.globalsoftwaresupport.app.App; 
 
+
+public class Constants {
+	static String f = "";
 	// we can not instantiate this class
 	private Constants() {
 		
@@ -35,5 +38,8 @@ public class Constants {
 	// it is equivalent to 67 FPS
 	public static final int GAME_SPEED = 15;
 	
-	public static final String GAME_OVER = "GAME OVER";
+	public static final String GAME_OVER = App.messages.getString("over");  
+
+	// Create the "Close Game" button  
+    // public static final JButton CLOSE_GAME_BUTTON = new JButton("Close Game"); 
 }
