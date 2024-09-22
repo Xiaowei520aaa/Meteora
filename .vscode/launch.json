@@ -6,16 +6,26 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "Launch App",
+            "name": "en-US App",
             "request": "launch",
             "mainClass": "com.globalsoftwaresupport.app.App",
-            "projectName": "Meteora"
-        }
+            "args": ["en", "US"]
+        },
+
+        {
+            "type": "java",
+            "name": "fr-FR App",
+            "request": "launch",
+            "mainClass": "com.globalsoftwaresupport.app.App",
+            "args": ["fr", "FR"]
+        },
+
+        {
+            "type": "java",
+            "name": "zh-CN App",
+            "request": "launch",
+            "mainClass": "com.globalsoftwaresupport.app.App",
+            "args": ["zh", "CN"]
+        }    
     ]
 }
