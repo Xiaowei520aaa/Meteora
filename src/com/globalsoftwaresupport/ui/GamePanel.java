@@ -169,9 +169,12 @@ public class GamePanel extends JPanel {
 
 	public void loop() {
 		// update
-		update();
+		//update();
 		// repaint the canvas
-		repaint();
+		if (!GameVariables.PAUSED) {  
+            update();  
+			repaint();
+        }  
 	}
 	
 	private void update() {
@@ -249,21 +252,28 @@ public class GamePanel extends JPanel {
 	}
 
 	public void keyPressed(KeyEvent e) {
-		spaceShip.keyPressed(e);
-		
-		// when the user hits the 'space' this is when the
-		// laser beams are generated
-		int key = e.getKeyCode();
-		
-		if(key == KeyEvent.VK_SPACE) {
-			if(GameVariables.IN_GAME) {
-				int x = spaceShip.getX();
-				int y = spaceShip.getY();
-				
-				lasers.add(new Laser(x, y));
-			}	
-		}
-	}
+		int key = e.getKeyCode();  
+        if (key == KeyEvent.VK_Q) {  
+            System.exit(0); // Quit the game when 'Q' is pressed  
+        } else if (key == KeyEvent.VK_P) {  
+            GameVariables.PAUSED = !GameVariables.PAUSED; // Toggle the pause state when 'P' is pressed  
+        } else { 
+			spaceShip.keyPressed(e);
+			
+			// when the user hits the 'space' this is when the
+			// laser beams are generated
+			key = e.getKeyCode();
+			
+			if(key == KeyEvent.VK_SPACE) {
+				if(GameVariables.IN_GAME) {
+					int x = spaceShip.getX();
+					int y = spaceShip.getY();
+					
+					lasers.add(new Laser(x, y));
+				}	
+			}
+		}	
+	} 
 
 	public void keyReleased(KeyEvent e) {
 		spaceShip.keyReleased(e);
