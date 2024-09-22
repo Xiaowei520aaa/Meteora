@@ -1,6 +1,8 @@
 package com.globalsoftwaresupport.app;
 
 import java.awt.EventQueue;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -8,6 +10,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import com.globalsoftwaresupport.ui.GameMainFrame;
 
 public class App {
+	public static ResourceBundle messages;
+	public static Locale currentLocale;
 
 	public static void main(String[] args) {
 		
