@@ -97,7 +97,7 @@ public class GamePanel extends JPanel {
 		Font font = new Font("Helvetica", Font.BOLD, 20);
 		g.setColor(Color.GRAY);
 		g.setFont(font);
-		g.drawString(App.messages.getString("Score") + " " + GameVariables.SCORE, Constants.GAME_WIDTH - 150, 50);
+		g.drawString(App.messages.getString("score") + " " + GameVariables.SCORE, Constants.GAME_WIDTH - 150, 50);
 		g.drawString(App.messages.getString("Shields") + " " + GameVariables.SHIELDS, 50, 50);
 	}
 
@@ -119,8 +119,8 @@ public class GamePanel extends JPanel {
 		
 		// draw the score
 		g.setColor(Color.YELLOW);
-		g.drawString(App.messages.getString("Score") + " " + GameVariables.SCORE, Constants.GAME_WIDTH/2 
-				- fontMetrics.stringWidth(App.messages.getString("Score") + " " + GameVariables.SCORE)/2
+		g.drawString(App.messages.getString("score") + " " + GameVariables.SCORE, Constants.GAME_WIDTH/2 
+				- fontMetrics.stringWidth(App.messages.getString("score") + " " + GameVariables.SCORE)/2
 				, Constants.GAME_HEIGHT-300);
 	}
 
