@@ -1,5 +1,15 @@
 package com.globalsoftwaresupport.ui;
 
+import com.globalsoftwaresupport.app.App;
+import com.globalsoftwaresupport.callbacks.GameEventListener;
+import com.globalsoftwaresupport.constants.Constants;
+import com.globalsoftwaresupport.constants.GameVariables;
+import com.globalsoftwaresupport.objects.Background;
+import com.globalsoftwaresupport.objects.Laser;
+import com.globalsoftwaresupport.objects.Meteor;
+import com.globalsoftwaresupport.objects.SpaceShip;
+import com.globalsoftwaresupport.random.RandomGenerator;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,19 +20,12 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
-import com.globalsoftwaresupport.callbacks.GameEventListener;
-import com.globalsoftwaresupport.constants.Constants;
-import com.globalsoftwaresupport.constants.GameVariables;
-import com.globalsoftwaresupport.objects.Background;
-import com.globalsoftwaresupport.objects.Laser;
-import com.globalsoftwaresupport.objects.Meteor;
-import com.globalsoftwaresupport.objects.SpaceShip;
-import com.globalsoftwaresupport.random.RandomGenerator;
-import com.globalsoftwaresupport.app.App;
+import javax.sound.sampled.AudioInputStream;  
+import javax.sound.sampled.AudioSystem;  
+import javax.sound.sampled.Clip;  
+import java.io.InputStream;    
 
 public class GamePanel extends JPanel {
 	
@@ -33,6 +36,7 @@ public class GamePanel extends JPanel {
 	private List<Meteor> meteors;
 	private RandomGenerator randomGenerator;
 	private CollisionDetector collisionDetector;
+	private SoundPlayer soundPlayer = new SoundPlayer();
 
 	public GamePanel() {
 		initalizeVariables();
@@ -100,6 +104,12 @@ public class GamePanel extends JPanel {
 		g.setFont(font);
 		g.drawString(App.messages.getString("score") + " " + GameVariables.SCORE, Constants.GAME_WIDTH - 150, 50);
 		g.drawString(App.messages.getString("shields") + " " + GameVariables.SHIELDS, 50, 50);
+
+		Font font2 = new Font(App.messages.getString("font"), Font.PLAIN, 10);
+		g.setColor(Color.GRAY);
+		g.setFont(font2);
+		g.drawString(App.messages.getString("info1"), 50, 150);
+		g.drawString(App.messages.getString("info2"), 50, 160);
 	}
 
 	private void gameOver(Graphics g) {
@@ -121,31 +131,8 @@ public class GamePanel extends JPanel {
 		// draw the score
 		g.setColor(Color.YELLOW);
 		g.drawString(App.messages.getString("score") + " " + GameVariables.SCORE, Constants.GAME_WIDTH/2 
-				- fontMetrics.stringWidth("Score: " + GameVariables.SCORE)/2
-				, Constants.GAME_HEIGHT-300);
-
-		// // quit the game
-		// g.setColor(Color.GREEN);
-		// g.setFont(font);
-		// // 计算按钮的位置   
-		// int buttonWidth = Constants.CLOSE_GAME_BUTTON.getPreferredSize().width;  
-		// int buttonHeight = Constants.CLOSE_GAME_BUTTON.getPreferredSize().height;  
-		// int buttonX = (Constants.GAME_WIDTH - buttonWidth) / 2;  
-		// int buttonY = (Constants.GAME_HEIGHT - buttonHeight) / 2;  
-		// Constants.CLOSE_GAME_BUTTON.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);  
-		// add(Constants.CLOSE_GAME_BUTTON);
-		// // Create the "Game Over" button  
-    	// Constants.CLOSE_GAME_BUTTON.addActionListener(e -> {  
-		// int choice = JOptionPane.showConfirmDialog(this, "What would you like to do?", "Game Over", JOptionPane.YES_NO_OPTION);  
-		// if (choice == JOptionPane.YES_OPTION) {  
-		// 	// Restart the game  
-		// 	remove(Constants.CLOSE_GAME_BUTTON);
-		// 	restartGame();  
-		// } else {  
-		// 	// Close the game  
-		// 	System.exit(0);  
-		// }  
-		// });  
+				- fontMetrics.stringWidth(App.messages.getString("score") + GameVariables.SCORE)/2
+				, Constants.GAME_HEIGHT-300); 
 	}
 
 	private void handleMeteors(Graphics g) {
@@ -164,6 +151,28 @@ public class GamePanel extends JPanel {
 	}
 
 	private void handleSpaceShip(Graphics g) {
+		//-- BLINK FOR FIVE TIMES
+		if(GameVariables.BLINK == true){
+			GameVariables.BLINK_TIMER += 1;
+			//-- 10 LOOPS PER BLINK
+			if(GameVariables.BLINK_TIMER == 5){
+				GameVariables.BLINK_CNT += 1;
+				GameVariables.BLINK_TIMER = 0;
+			}
+			if(GameVariables.BLINK_CNT % 2 == 0){
+				spaceShip.setInvisible();
+			}else{
+				spaceShip.setVisible();
+			}
+			if(GameVariables.BLINK_CNT == 7){
+				GameVariables.BLINK_CNT = 0;
+				GameVariables.BLINK = false;
+				if(GameVariables.BLINK_CACHE > 0){
+					GameVariables.BLINK_CACHE --;
+					GameVariables.BLINK = true;
+				}
+			}
+		}
 		spaceShip.update(g);
 	}
 
@@ -238,18 +247,47 @@ public class GamePanel extends JPanel {
 		// detect the collisions between meteors and the spaceship
 		destroyedMeteor = null;
 		
+
 		for(Meteor meteor : meteors) {
 			if(collisionDetector.collisionMeteorSpaceShip(meteor, spaceShip)) {
 				destroyedMeteor = meteor;
-				GameVariables.SHIELDS--;
+				//if(GameVariables.BLINK == false){
+					GameVariables.SHIELDS--;
+				//}
+				//*when this if is enabled, Spaceship becomes invincible during the blink(damage) */
 						
-				if(GameVariables.SHIELDS < 0)
-					spaceShip.die();
+				if(GameVariables.SHIELDS < 0){
+					spaceShip.die(); 
+				} else {  
+					if(GameVariables.BLINK == true){
+						//-- restore current blink
+						GameVariables.BLINK_CACHE ++;
+						soundPlayer.playSound("meteor_crash.wav");
+					}else{
+						// Make the spaceship blink
+						GameVariables.BLINK = true;
+						soundPlayer.playSound("meteor_crash.wav");
+					}     
+				}  
 			}
 		}
 		
 		meteors.remove(destroyedMeteor);
 	}
+
+	public class SoundPlayer {  
+		public void playSound(String soundFileName) {  
+			try {  
+				InputStream is = getClass().getResourceAsStream("/" + soundFileName);  
+				AudioInputStream audioIn = AudioSystem.getAudioInputStream(is);  
+				Clip clip = AudioSystem.getClip();  
+				clip.open(audioIn);  
+				clip.start();  
+			} catch (Exception e) {  
+				e.printStackTrace();  
+			}  
+		}  
+	}    
 
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();  
@@ -270,6 +308,7 @@ public class GamePanel extends JPanel {
 					int y = spaceShip.getY();
 					
 					lasers.add(new Laser(x, y));
+					soundPlayer.playSound("laser_out.wav");
 				}	
 			}
 		}	
@@ -278,13 +317,4 @@ public class GamePanel extends JPanel {
 	public void keyReleased(KeyEvent e) {
 		spaceShip.keyReleased(e);
 	}
-
-	// public void restartGame() {  
-    //     initalizeVariables(); // Reset the game variables  
-    //     GameVariables.IN_GAME = true; // Set the game state to in-game  
-    //     if (!timer.isRunning()) {  
-    //         timer.start(); // Start the game loop if it's not running  
-    //     }  
-    //     repaint(); // Repaint the canvas to display the reset game state  
-    // }
 }

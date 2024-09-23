@@ -1,14 +1,11 @@
 package com.globalsoftwaresupport.objects;
 
-import java.awt.Frame;
+import com.globalsoftwaresupport.constants.Constants;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.ImageIcon;
-
-import com.globalsoftwaresupport.constants.Constants;
 
 public class SpaceShip extends Sprite {
 
@@ -17,6 +14,7 @@ public class SpaceShip extends Sprite {
 	private int dy;
 	private List<ImageIcon> frames;
 	private int imageIndex;
+	private boolean visible = true;  
 	
 	public SpaceShip() {
 		frames = new ArrayList<>();
@@ -36,6 +34,31 @@ public class SpaceShip extends Sprite {
 		setY(initialY);
 	}
 	
+	public void setInvisible() {  
+		this.visible = false;  
+	}  
+	
+	public void setVisible() {  
+		this.visible = true;  
+	}    
+
+	// public void blinkSpaceship(int times) {    
+    //     for (int i = 0; i < times; i++) {    
+    //         setInvisible(); // Set spaceship to invisible    
+    //         try {    
+    //             Thread.sleep(200); // Adjust the duration as needed    
+    //         } catch (InterruptedException e) {    
+    //             e.printStackTrace();    
+    //         }    
+    //         setVisible(); // Set spaceship to visible    
+    //         try {    
+    //             Thread.sleep(200); // Adjust the duration as needed    
+    //         } catch (InterruptedException e) {    
+    //             e.printStackTrace();    
+    //         }    
+    //     }    
+    // }
+
 	@Override
 	protected void update() {
 		
@@ -69,8 +92,12 @@ public class SpaceShip extends Sprite {
 	@Override
 	protected void act(Graphics g) {
 		// this is when we show the spaceship (paint on the canvas)
-		setImage(frames.get(imageIndex).getImage());
-		g.drawImage(getImage(), x, y, null);
+		// setImage(frames.get(imageIndex).getImage());
+		// g.drawImage(getImage(), x, y, null);
+		if (visible) {  
+			setImage(frames.get(imageIndex).getImage());  
+			g.drawImage(getImage(), x, y, null);  
+		}  
 	}
 
 	public void keyPressed(KeyEvent e) {

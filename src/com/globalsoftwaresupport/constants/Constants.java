@@ -42,4 +42,5 @@ public class Constants {
 
 	// Create the "Close Game" button  
     // public static final JButton CLOSE_GAME_BUTTON = new JButton("Close Game"); 
+
 }
